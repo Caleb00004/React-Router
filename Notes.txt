@@ -1,0 +1,191 @@
+	REACT ROUTER
+- It is used to develop single page websites. [dose'nt mean website with one long page]
+- it means websites that use client side rendering [i.e pages a simple switched or swapped on the webpage]
+
+used for create multiple page react web apps.
+
+Key Components [ROUTERS, Route, Link ]
+- ROUTERS     'BROWSERROUTER' [recommened] // use HTML5 history api
+   <BrowserRouter>, <HashRouter>
+   wrap App with ROUTER component
+   Types: HashRouter (#about), BrowserRouter(/about), MemoryROuter
+
+- ROUTE MATCHERS
+   Declare route using ROUTE components.
+
+	accepts props: indicate which component to load
+   e.g <Route> <Switch>
+   
+      ROUTE
+   - Route allows you to map URL paths to different React components 
+
+   When you want to create a NEW ROUTE,You will need to
+   render a New 'Route component'.
+
+- Navigation("route Changers)
+      <Link>, <NavLink>, <Redirect>
+      <NavLink> - returns or adds other properties to the anchor tags it creates
+                  e.g an class active property. to active Links (check elements in console)
+                - NOTE: should be used mainle when creating navbar Components or links
+
+   e.g
+      LINK component [	creates an anchor tag <a>  ]
+   used to navigate to a different paths
+   This is also used to prevent post back to the server 
+   (i.e page will not need to rload, it will
+    just autmotically switch to next component)
+
+
+
+
+         SETTING UP React ROUTER  (works similar to ReactContext)
+- First instal react router dom [ npm install react-router-dom ]
+- import the ROUTER you wanto use to the parent Component [BrowserRouter is recommened]
+- Then wrap the root parent component with the ROUTER component imported
+
+in parent component
+import {BROWSERROUTER as ROUTER} from 'react-router-dom'
+import 'App' from '.....
+
+ReactDOM.render(
+   <ROUTER>
+      <App />
+   </ROUTER>,
+   document.get.....
+)
+NOTE: The Link component does not have to be in the same component that <Routes> was used.
+      i.e the Link can be in any component but the { to'path' } should exist in the Routes.
+
+- Anytime you want to move to another route/component using reactRouter,
+      you will us the LINK component.
+   it takes a Prop 'to' this prop points to what path that 'link' should lead to 
+      i.e the next component that should be rendered when it is clicked.
+
+      <Link to='/componentPath'>text diplay to DOm </Link>
+
+      Note: SWITCH has being replaced with Routes
+
+   Then using the {SWITCH}ROUTES component. and ROUTE Component.
+   - The ROUTES component is used to switch from one component to another. based om the ROUTE component
+   - The ROUTE component looks at the path and then based of the path the ROUTES component switches/moves to a new component
+
+      // The new way to do this.
+   <Routes>
+      <Route path='pathToLookFor' element={'componentToRender} />
+   </Routes>
+
+      PROGRAMATIC NAVIGATING.
+- e.g an event that happens when an action has happens after an event is succesful i.e 
+    placing an order
+use a useNavigate hook.
+import {useNavigate} from 'react-router-dom'
+
+//call the hook and assggn it to a constant/variable. e.g
+const myOrderSubmit = useNavigate()
+
+then in the button to submit the order:
+   <button onClick={() => myOrderSubmit('path-to-navigate')}></button>
+
+to navigate back to the previous page just add '-1' to the 'path-to-navigate' in the useNavigate hook.
+
+
+      NOROUTES
+- TO handle routes that don't exist. create a route that has a '*' path.
+- This path will only be match/beActive when no other routes do
+
+      NESTED ROUTE
+This is a Route inside a route  e.g (https:localHost3000/Home/pofile/settings)
+
+The main or First route 'path' should have a * at the end. i.e <Route path='/home/*'>
+
+- when you have nested route and you want the route to render at the Parent path.
+- declare a new route and use an 'index' property insread of 'path' prop
+    This index will point to the nested component you want to render at parent path
+
+
+      For DYNAMIC ROUTES
+- add a colon ':' at the back of the path
+Then you use a hook useParams() hook. 
+This hooks returns all of the custom parameters you passed to the url.
+
+   i.e
+   <Route path='users/:user_id'/>
+
+   import {useParams}  from react-...
+
+   const {user_id} = useParams()  // To destructure user_id parameter from the url.
+      or
+   const params = useParams()
+//   const 'propertyName' = params.'propertyName'
+   const id = params.user_id
+
+but if there another route similar to the dynamic route with a more specific path
+react router will first match he specific route to a dynamic one.
+i.e <Route path='users/details' /> 
+react-router will first match to this one in the browser.
+
+      Searh Params. HOOK
+hook useSearchParams() [The syntax is similar to useState hook.]
+- it is commonly used to apply Filters in a Listing page
+
+returns 2 values, OBJECT and FUNCTION to set the Object
+   steps
+import the useSearchParams hook and declare it
+The first var is the object that stores the parameters while the second var is used to set the value of the object.
+   syntax
+const ['varName', 'setVarName'] = useSearchParams()
+
+/* Check CONTACT page for example */
+
+         LAZY LOADING
+- A techinque where components not requred on current page can be split into different bundles and be 
+      downloaded only when the user navigates to that page
+-  It heps reduce initial Load Time.
+- Used to improve Performance. [i.e if a component is bulky or heavy, you can lazy loading the component.]
+To lazy load, you need to use Dynamic imports and React Suspense.
+
+for Dynamic imports, You need to default export The component you are trying to lazy LOad
+import React and use react.lazy() to import the component
+
+React.lazy takes another function as arguement and calls the dynamic import
+The dynamic import returns a Promise.
+which is conveted into a module that contains the default exported component.
+
+- Then include the lazyComponent as part of the routes configuration
+
+const 'varName' = React.lazy(() => import('componentLocation'))
+
+- Then wrap the lazyComponent in the ROUTE with react.Suspense. with a 'fallback' prop 
+      This is kinda like a backup message that will show while the component is still loading.
+
+      steps>>
+import React from 'react'
+const LazyHome = React.Lazy(() => import('./HomComponent')) 
+
+<Routes>
+   <Route path='/home' element={
+      <React.Suspense fallback='loading...'>
+         <LazyHome />
+      </React.Suspense>
+   }/>
+</Routes>
+
+
+         PROTECTED ROUTES.
+i.e You wanto a route to only be accessible when a user is logged in.
+
+- check 'auth.js' file and Auth & Protected Folder.
+   I used contextApi to pass the logged in state and methods to the whole app.
+
+'auth.js' File contains the contextApi function.
+
+
+
+GENERAL NoTE: 
+Relative Links don't start with forward slash.
+They inherit from the closet route from which they are rendered.
+   <Link to='homePage'> Home </Link> //A Relative Link
+   <Link to='/homePage'> Home </Link> //An absolute link
+
+
+

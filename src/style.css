@@ -1,0 +1,11 @@
+nav > a{
+    padding: 10px 10px;
+    text-decoration: none;
+    color: black;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+
+nav >a.active {
+    color: blue;
+    font-size: 20px;
+}
